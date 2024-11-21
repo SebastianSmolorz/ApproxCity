@@ -4,6 +4,7 @@ const useDevModeApi = () => {
   return {
     getDailyGame: () => {
       return Promise.resolve({
+            "gameId": "2024-11-19",
             "guesses": [
               {
                 "city": "Sydney",
