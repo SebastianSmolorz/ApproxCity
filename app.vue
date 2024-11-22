@@ -9,7 +9,7 @@
 <!--  <li><NuxtLink to="/">Home page</NuxtLink></li>-->
 <!--  <li><NuxtLink to="/about">About page</NuxtLink></li>-->
 <!--  </ul>-->
-  <div class="app-container bg-purple-400 w-screen h-screen font-sans">
+  <div class="app-container bg-purple-300 w-screen h-screen font-sans">
       <NuxtPage />
   </div>
 

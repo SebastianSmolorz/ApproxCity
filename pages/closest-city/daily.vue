@@ -15,6 +15,7 @@ export default {
     const totalDistance = ref(0)
     const game = ref(null)
     const lastDoneDaily = ref('')
+    const config = useRuntimeConfig()
     const {getDailyGame, postGuess} = useFooApi()
     let {saveDailyGameScore, saveRoundScore, getLastDoneDaily, getLastDailyScore, resetGame, getValue} = useGameState()
 
@@ -50,7 +51,7 @@ export default {
         totalDistance.value += roundScore
         saveRoundScore(gameId.value, round.value, distance.value.toString(), distance.value.toString())
         if (isFinalRound.value) {
-          gameState.value = GameState.GameOver
+          gameState.value = GameState.RoundResult
           saveDailyGameScore(gameId.value, totalDistance.value, totalDistance.value)
         } else {
           gameState.value = GameState.RoundResult
@@ -78,6 +79,7 @@ export default {
     const isFinalRound = computed(() => round.value >= game.value?.guesses.length)
     const hasDoneDaily = computed(() => gameId.value === lastDoneDaily.value)
     const nextRoundBtn = ref(null)
+    const roundResultImage = computed(() => `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+319832(-2,51),pin-s+aa0100(-2.1122,51.2289)/auto/307x200?access_token=${config.public.mapboxToken}`)
 
     const focusNextFoundBtn = () => {
       nextTick(() => {
@@ -103,7 +105,8 @@ export default {
       resetGame,
       gameId,
       lastDoneDaily,
-      nextRoundBtn
+      nextRoundBtn,
+      roundResultImage
     }
   }
 }
@@ -123,6 +126,7 @@ export default {
         Total score: {{ totalDistance.toFixed(3) }}
       </template>
       <template v-else-if="isRoundResult">
+        <img :src="roundResultImage">
         <span v-if="score">{{ score }}km</span>
         <button ref="nextRoundBtn" class="button" :disabled="!hasGuess" v-if="score" type="submit" @click="nextRound">
           Next round
