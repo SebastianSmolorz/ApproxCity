@@ -5,7 +5,8 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     public: {
-      mapboxToken: process.env.NUXT_MAPBOX_TOKEN
+      mapboxToken: process.env.NUXT_MAPBOX_TOKEN,
+      gameUrl: process.env.NUXT_APPROXCITY_LAMBDA_URL
     }
   },
   postcss: {

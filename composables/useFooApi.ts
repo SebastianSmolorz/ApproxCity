@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const useDevModeApi = () => {
+  const config = useRuntimeConfig()
   return {
     getDailyGame: () => {
       return Promise.resolve({
@@ -23,20 +24,26 @@ const useDevModeApi = () => {
       )
     },
     postGuess: async () => {
-      return new Promise((resolve) => resolve(666.666))
+      return new Promise((resolve) => resolve({
+        distance: 666.666,
+        score: 666.666,
+        roundImageUrl: `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+319832(-2,51),pin-s+aa0100(-2.1122,51.2289)/auto/307x200?access_token=${config.public.mapboxToken}`,
+        guessLngLat: {lng: 51.2, lat: 2.0},
+        resultLngLat: {lng: 51.2, lat: 2.0}
+      }))
     }
   }
 }
 
 export const useFooApi = () => {
-  // useState('foo', () => 'bar')
-  const DEV_MODE = true
+  const config = useRuntimeConfig()
+  const DEV_MODE = false
   if (DEV_MODE) {
     return useDevModeApi()
   }
 
   const getDailyGame = async (): Promise<any> => {
-    const url = `${process.env.APPROXCITY_LAMBDA_URL}test/daily`
+    const url = `${config.public.gameUrl}staging/daily-game`
     let response
     try {
       response = await axios.get(url)
@@ -47,7 +54,7 @@ export const useFooApi = () => {
   }
 
   const postGuess = async (round: number, guessText: string): Promise<any> => {
-    const url = `${process.env.APPROXCITY_LAMBDA_URL}test/submit-guess/?guess=${guessText}&round=${round}`
+    const url = `${process.env.APPROXCITY_LAMBDA_URL}staging/daily-guess/?guess=${guessText}&round=${round}`
     let response
     try {
       response = await axios.post(url)

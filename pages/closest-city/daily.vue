@@ -1,17 +1,14 @@
 <script lang="ts">
 import {ref, nextTick} from 'vue';
 import {GameState} from "~/pages/closest-city/types";
-import {last} from "@antfu/utils";
 
 export default {
-  methods: {last},
   setup() {
     const isLoading = ref(true)
     const gameId = ref(null)
     const round = ref(1)
     const gameState = ref('round')
     const guessText = ref('')
-    const distance = ref(null)
     const totalDistance = ref(0)
     const game = ref(null)
     const lastDoneDaily = ref('')
@@ -19,9 +16,19 @@ export default {
     const {getDailyGame, postGuess} = useFooApi()
     let {saveDailyGameScore, saveRoundScore, getLastDoneDaily, getLastDailyScore, resetGame, getValue} = useGameState()
 
+    // Round results
+    const roundResultImage = ref(null)
+    const roundResultLngLat = ref(null)
+    const guessLngLat = ref(null)
+    const distance = ref(null)
+
 
     onMounted(async () => {
-      game.value = await getDailyGame()
+      try {
+         game.value = await getDailyGame()
+      } catch (e) {
+        alert('Failed to load the game.')
+      }
       gameId.value = game.value?.gameId
       if (gameId.value) {
         isLoading.value = false
@@ -46,7 +53,10 @@ export default {
       }
       const data = await postGuess(round.value, guessText.value)
       if (data) {
-        let roundScore = parseFloat(data)
+        let roundScore = parseFloat(data?.distance)
+        roundResultImage.value = data?.roundImageUrl
+        roundResultLngLat.value = data?.resultLngLat
+        guessLngLat.value = data?.guessLngLat
         distance.value = roundScore.toFixed(3)
         totalDistance.value += roundScore
         saveRoundScore(gameId.value, round.value, distance.value.toString(), distance.value.toString())
@@ -79,7 +89,6 @@ export default {
     const isFinalRound = computed(() => round.value >= game.value?.guesses.length)
     const hasDoneDaily = computed(() => gameId.value === lastDoneDaily.value)
     const nextRoundBtn = ref(null)
-    const roundResultImage = computed(() => `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+319832(-2,51),pin-s+aa0100(-2.1122,51.2289)/auto/307x200?access_token=${config.public.mapboxToken}`)
 
     const focusNextFoundBtn = () => {
       nextTick(() => {
