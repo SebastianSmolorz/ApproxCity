@@ -43,7 +43,7 @@ export const useFooApi = () => {
   }
 
   const getDailyGame = async (): Promise<any> => {
-    const url = `${config.public.gameUrl}staging/daily-game`
+    const url = `${config.public.gameUrl}/daily-game`
     let response
     try {
       response = await axios.get(url)
@@ -54,7 +54,7 @@ export const useFooApi = () => {
   }
 
   const postGuess = async (round: number, guessText: string): Promise<any> => {
-    const url = `${process.env.APPROXCITY_LAMBDA_URL}staging/daily-guess/?guess=${guessText}&round=${round}`
+    const url = `${config.public.gameUrl}/daily-guess/?guess=${guessText}&round=${round}`
     let response
     try {
       response = await axios.post(url)

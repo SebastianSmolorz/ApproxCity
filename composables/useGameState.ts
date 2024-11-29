@@ -22,7 +22,11 @@ export const useGameState = () => {
     }
 
     function getLastDailyScore (gameId: string) {
-        return getValue(gameId)
+        let val = getValue(`${gameId}_final`)
+        if (val) {
+            return Number(val.split(',')[1]).toFixed(3)
+        }
+        return null
     }
 
     function resetGame() {

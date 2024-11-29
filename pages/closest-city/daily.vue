@@ -5,6 +5,7 @@ import {GameState} from "~/pages/closest-city/types";
 export default {
   setup() {
     const isLoading = ref(true)
+    const isSubmitting = ref(false)
     const gameId = ref(null)
     const round = ref(1)
     const gameState = ref('round')
@@ -12,6 +13,7 @@ export default {
     const totalDistance = ref(0)
     const game = ref(null)
     const lastDoneDaily = ref('')
+    const lastDailyScore = ref(0)
     const config = useRuntimeConfig()
     const {getDailyGame, postGuess} = useFooApi()
     let {saveDailyGameScore, saveRoundScore, getLastDoneDaily, getLastDailyScore, resetGame, getValue} = useGameState()
@@ -34,6 +36,7 @@ export default {
         isLoading.value = false
       }
       lastDoneDaily.value = getLastDoneDaily()
+      lastDailyScore.value = getLastDailyScore(gameId.value)
       if (getValue(`${gameId.value},2`)) {
         round.value = 3
       } else if (getValue(`${gameId.value},1`)) {
@@ -51,6 +54,7 @@ export default {
       if (!hasGuess.value) {
         return
       }
+      isSubmitting.value = true
       const data = await postGuess(round.value, guessText.value)
       if (data) {
         let roundScore = parseFloat(data?.distance)
@@ -67,6 +71,7 @@ export default {
           gameState.value = GameState.RoundResult
           focusNextFoundBtn()
         }
+        isSubmitting.value = false
       }
     }
 
@@ -115,7 +120,9 @@ export default {
       gameId,
       lastDoneDaily,
       nextRoundBtn,
-      roundResultImage
+      roundResultImage,
+      lastDailyScore,
+      isSubmitting
     }
   }
 }
@@ -128,11 +135,12 @@ export default {
     </template>
     <template v-else>
       <template v-if="hasDoneDaily">
-        Your score today is {{ lastDoneDaily }}
+        Your score today is {{ lastDailyScore }}
         <button type="button" @click="resetGame">Retry</button>
       </template>
       <template v-else-if="isGameOver">
-        Total score: {{ totalDistance.toFixed(3) }}
+        Your score today is {{ lastDailyScore }}
+        <button type="button" @click="resetGame">Retry</button>
       </template>
       <template v-else-if="isRoundResult">
         <img :src="roundResultImage">
@@ -147,7 +155,10 @@ export default {
         <p>Guess a city, town or village nearest to:</p>
         <h1 class="to-guess-location">{{ location }}</h1>
         <input class="text-input" autofocus type="text" v-model="guessText"/>
-        <button class="button" type="submit" @click="submitGuess">Submit guess</button>
+        <button class="button" type="submit" @click="submitGuess" :disabled="isSubmitting">
+          <template v-if="!isSubmitting">Submit guess</template>
+          <template v-else>Submitting</template>
+        </button>
       </template>
     </template>
   </div>
