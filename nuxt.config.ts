@@ -19,8 +19,8 @@ export default defineNuxtConfig({
   },
  fontawesome: {
     icons: {
-      solid: ['spinner', 'globe'],
+      solid: ['spinner', 'globe', 'trophy', 'share-nodes'],
     }
   },
-  modules: ['@vesp/nuxt-fontawesome']
+  modules: ['@vesp/nuxt-fontawesome', '@vueuse/nuxt']
 })

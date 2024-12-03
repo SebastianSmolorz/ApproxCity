@@ -1,6 +1,7 @@
 <script lang="ts">
 import {ref, nextTick} from 'vue';
 import {GameState} from "~/pages/closest-city/types";
+import { useClipboard } from '@vueuse/core'
 
 export default {
   setup() {
@@ -23,10 +24,13 @@ export default {
     const guessLngLat = ref(null)
     const distance = ref(null)
 
+    const source = computed(() => `NearCity Daily ${gameId.value}\n🌍🟩🟩🟩🟩🟩\nTotal distance: ${lastDailyScore.value}km`)
+    const { copy } = useClipboard({ source })
+
 
     onMounted(async () => {
       try {
-         game.value = await getDailyGame()
+        game.value = await getDailyGame()
       } catch (e) {
         alert('Failed to load the game.')
       }
@@ -122,7 +126,8 @@ export default {
       nextRoundBtn,
       roundResultImage,
       lastDailyScore,
-      isSubmitting
+      isSubmitting,
+      copy
     }
   }
 }
@@ -135,7 +140,10 @@ export default {
     </template>
     <template v-else>
       <template v-if="hasDoneDaily || isGameOver">
-        Your score today is {{ lastDailyScore }}
+        <font-awesome icon="fas fa-trophy" class="fa-2xl text-purple-950"/>
+        <div class="font-bold">Your score today is {{ lastDailyScore }}</div>
+        <button @click="copy()" class="bg-white rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400">Share results <font-awesome icon="fas fa-share-nodes" /></button>
+        <p class="text-lg">Come back in X hours for the next daily game.</p>
         <button type="button" @click="resetGame">Retry</button>
       </template>
       <template v-else-if="isRoundResult">
@@ -151,7 +159,7 @@ export default {
         <header class="text-lg">Guess a city, town or village nearest to:</header>
         <h1 class="to-guess-location">{{ location }}</h1>
         <input class="text-input" autofocus type="text" v-model="guessText"/>
-        <button :class="{'bg-purple-400': isSubmitting}" class="text-2xl bg-white rounded-md p-2 bg-purple-800 text-amber-50 p-5 hover:bg-purple-400" type="submit" @click="submitGuess" :disabled="isSubmitting">
+        <button :class="{'bg-purple-400': isSubmitting}" class="text-2xl bg-white rounded-md p-2 bg-purple-950 text-amber-50 p-5 hover:bg-purple-400" type="submit" @click="submitGuess" :disabled="isSubmitting">
           <template v-if="!isSubmitting">Submit guess</template>
           <template v-else>Submitting  <font-awesome icon="fas fa-spinner" class="fa-spin"/></template>
         </button>
