@@ -14,7 +14,6 @@ export default {
     const game = ref(null)
     const lastDoneDaily = ref('')
     const lastDailyScore = ref(0)
-    const config = useRuntimeConfig()
     const {getDailyGame, postGuess} = useFooApi()
     let {saveDailyGameScore, saveRoundScore, getLastDoneDaily, getLastDailyScore, resetGame, getValue} = useGameState()
 
@@ -67,6 +66,7 @@ export default {
         if (isFinalRound.value) {
           gameState.value = GameState.RoundResult
           saveDailyGameScore(gameId.value, totalDistance.value, totalDistance.value)
+          lastDailyScore.value = getLastDailyScore(gameId.value)
         } else {
           gameState.value = GameState.RoundResult
           focusNextFoundBtn()
@@ -131,14 +131,10 @@ export default {
 <template>
   <div class="container">
     <template v-if="isLoading">
-      Loading...
+      <div class="text-2xl"><font-awesome icon="fas fa-globe" class="fa-beat-fade mr-1.5"/> Loading</div>
     </template>
     <template v-else>
-      <template v-if="hasDoneDaily">
-        Your score today is {{ lastDailyScore }}
-        <button type="button" @click="resetGame">Retry</button>
-      </template>
-      <template v-else-if="isGameOver">
+      <template v-if="hasDoneDaily || isGameOver">
         Your score today is {{ lastDailyScore }}
         <button type="button" @click="resetGame">Retry</button>
       </template>
@@ -150,14 +146,14 @@ export default {
         </button>
       </template>
       <template v-else>
-        <header>Navigator {{ gameId }}</header>
-        <strong>Round {{ round }}</strong>
-        <p>Guess a city, town or village nearest to:</p>
+<!--        <header>{{ gameId }}</header>-->
+<!--        <strong>Round {{ round }}</strong>-->
+        <header class="text-lg">Guess a city, town or village nearest to:</header>
         <h1 class="to-guess-location">{{ location }}</h1>
         <input class="text-input" autofocus type="text" v-model="guessText"/>
-        <button class="button" type="submit" @click="submitGuess" :disabled="isSubmitting">
+        <button :class="{'bg-purple-400': isSubmitting}" class="text-2xl bg-white rounded-md p-2 bg-purple-800 text-amber-50 p-5 hover:bg-purple-400" type="submit" @click="submitGuess" :disabled="isSubmitting">
           <template v-if="!isSubmitting">Submit guess</template>
-          <template v-else>Submitting</template>
+          <template v-else>Submitting  <font-awesome icon="fas fa-spinner" class="fa-spin"/></template>
         </button>
       </template>
     </template>
@@ -198,6 +194,8 @@ html, body {
   height: 4vw;
   width: 20vw;
   font-size: 2rem;
+  min-height: 50px;
+  min-width: 200px;
 }
 
 .button {
@@ -217,6 +215,7 @@ html, body {
   font-size: 4vw;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  font-weight: bold;
 }
 
 
