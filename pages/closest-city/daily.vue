@@ -24,7 +24,7 @@ export default {
     const guessLngLat = ref(null)
     const distance = ref(null)
 
-    const source = computed(() => `NearCity Daily ${gameId.value}\n🌍🟩🟩🟩🟩🟩\nTotal distance: ${lastDailyScore.value}km`)
+    const source = computed(() => `NearCity Daily ${gameId.value}\nTotal distance: ${lastDailyScore.value}km`)
     const { copy } = useClipboard({ source })
 
 
@@ -142,13 +142,13 @@ export default {
       <template v-if="hasDoneDaily || isGameOver">
         <font-awesome icon="fas fa-trophy" class="fa-2xl text-purple-950"/>
         <div class="font-bold">Your score today is {{ lastDailyScore }}</div>
-        <button @click="copy()" class="bg-white rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400">Share results <font-awesome icon="fas fa-share-nodes" /></button>
-        <p class="text-lg">Come back in X hours for the next daily game.</p>
-        <button type="button" @click="resetGame">Retry</button>
+        <button @click="copy()" class="rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400">Share results <font-awesome icon="fas fa-share-nodes" /></button>
+        <p class="text-lg">Come back tomorrow for the next daily game.</p>
+<!--        <button type="button" @click="resetGame">Retry</button>-->
       </template>
       <template v-else-if="isRoundResult">
         <img :src="roundResultImage">
-        <span v-if="score">{{ score }}km</span>
+        <div v-if="score">{{ score }}km</div>
         <button ref="nextRoundBtn" class="button" :disabled="!hasGuess" v-if="score" type="submit" @click="nextRound">
           Next round
         </button>
@@ -158,11 +158,13 @@ export default {
 <!--        <strong>Round {{ round }}</strong>-->
         <header class="text-lg">Guess a city, town or village nearest to:</header>
         <h1 class="to-guess-location">{{ location }}</h1>
-        <input class="text-input" autofocus type="text" v-model="guessText"/>
-        <button :class="{'bg-purple-400': isSubmitting}" class="text-2xl bg-white rounded-md p-2 bg-purple-950 text-amber-50 p-5 hover:bg-purple-400" type="submit" @click="submitGuess" :disabled="isSubmitting">
-          <template v-if="!isSubmitting">Submit guess</template>
-          <template v-else>Submitting  <font-awesome icon="fas fa-spinner" class="fa-spin"/></template>
-        </button>
+        <form class="flex flex-col">
+          <input class="text-input" autofocus type="text" v-model="guessText"/>
+          <button :class="{'bg-purple-400': isSubmitting}" class="text-2xl rounded-md p-2 bg-purple-950 text-amber-50 p-5 hover:bg-purple-400 mt-10" type="submit" @click="submitGuess" :disabled="isSubmitting">
+            <template v-if="!isSubmitting">Submit guess</template>
+            <template v-else>Submitting  <font-awesome icon="fas fa-spinner" class="fa-spin"/></template>
+          </button>
+        </form>
       </template>
     </template>
   </div>
