@@ -159,7 +159,7 @@ export default {
         <header class="text-lg">Guess a city, town or village nearest to:</header>
         <h1 class="to-guess-location">{{ location }}</h1>
         <form class="flex flex-col">
-          <input class="text-input" autofocus type="text" v-model="guessText"/>
+          <input class="text-input" type="text" v-model="guessText"/>
           <button :class="{'bg-purple-400': isSubmitting}" class="text-2xl rounded-md p-2 bg-purple-950 text-amber-50 p-5 hover:bg-purple-400 mt-10" type="submit" @click="submitGuess" :disabled="isSubmitting">
             <template v-if="!isSubmitting">Submit guess</template>
             <template v-else>Submitting  <font-awesome icon="fas fa-spinner" class="fa-spin"/></template>
