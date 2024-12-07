@@ -25,7 +25,7 @@ export default {
     const guessLngLat = ref(null)
     const distance = ref(null)
 
-    const source = computed(() => `NearCity Daily ${gameId.value}\n${distanceToEmojis(lastDailyScore.value)}\nTotal distance: ${lastDailyScore.value}km`)
+    const source = computed(() => `NearCity Daily ${gameId.value}\n${distanceToEmojis(lastDailyScore.value)}\nTotal distance: ${lastDailyScore.value}km\nhttps://approx-city.vercel.app/`)
     const { copy } = useClipboard({ source })
 
     const { share, isSupported } = useShare()
@@ -35,6 +35,7 @@ export default {
         share({
           title: 'NearCity Daily Score',
           text: source.value,
+          url: 'https://approx-city.vercel.app/'
         })
       } else {
         copy()
