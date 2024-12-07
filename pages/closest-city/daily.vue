@@ -1,7 +1,7 @@
 <script lang="ts">
 import {ref, nextTick} from 'vue';
 import {GameState} from "~/pages/closest-city/types";
-import { useClipboard } from '@vueuse/core'
+import { useClipboard, useShare } from '@vueuse/core'
 
 export default {
   setup() {
@@ -26,6 +26,19 @@ export default {
 
     const source = computed(() => `NearCity Daily ${gameId.value}\nTotal distance: ${lastDailyScore.value}km`)
     const { copy } = useClipboard({ source })
+
+    const { share, isSupported } = useShare()
+
+    function shareResult() {
+      if (isSupported.value) {
+        share({
+          title: 'NearCity Daily Score',
+          text: source.value,
+        })
+      } else {
+        copy()
+      }
+    }
 
 
     onMounted(async () => {
@@ -127,7 +140,7 @@ export default {
       roundResultImage,
       lastDailyScore,
       isSubmitting,
-      copy
+      shareResult
     }
   }
 }
@@ -142,7 +155,7 @@ export default {
       <template v-if="hasDoneDaily || isGameOver">
         <font-awesome icon="fas fa-trophy" class="fa-2xl text-purple-950"/>
         <div class="font-bold">Your score today is {{ lastDailyScore }}</div>
-        <button @click="copy()" class="rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400">Share results <font-awesome icon="fas fa-share-nodes" /></button>
+        <button @click="shareResult" class="rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400">Share results <font-awesome icon="fas fa-share-nodes" /></button>
         <p class="text-lg">Come back tomorrow for the next daily game.</p>
 <!--        <button type="button" @click="resetGame">Retry</button>-->
       </template>
