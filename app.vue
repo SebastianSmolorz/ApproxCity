@@ -1,7 +1,15 @@
 <script setup lang="ts">
-
-
+useHead({
+  title: 'Around The Map',
+  meta: [
+    { name: 'description', content: 'Daily geography game..' }
+  ],
+  bodyAttrs: {
+    class: 'bubblegum-font'
+  },
+})
 </script>
+
 
 <template>
   <NuxtLoadingIndicator />

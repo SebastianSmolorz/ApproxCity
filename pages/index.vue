@@ -3,8 +3,9 @@
 </script>
 
 <template>
-  <div class="h-screen flex items-center justify-center">
+  <div class="intro-page h-screen flex items-center justify-center">
     <div class="text-center">
+      <img src="/images/logo.png" width="200" style="margin: 0 auto">
       <h1 class="text-4xl m-10" style="min-width: 380px"><font-awesome icon="fas fa-globe" class="fa-spin mr-3"/>Around The Map<font-awesome icon="fas fa-globe" class="fa-spin ml-3"/></h1>
       <h2 class="text-2xl m-10">Play daily, name the nearest city and score big!</h2>
       <NuxtLink to="/closest-city/daily">
