@@ -17,6 +17,7 @@ export default {
     const lastDailyScore = ref(0)
     const {getDailyGame, postGuess} = useFooApi()
     let {saveDailyGameScore, saveRoundScore, getLastDoneDaily, getLastDailyScore, resetGame, getValue} = useGameState()
+    const { distanceToEmojis } = useShareResults()
 
     // Round results
     const roundResultImage = ref(null)
@@ -24,7 +25,7 @@ export default {
     const guessLngLat = ref(null)
     const distance = ref(null)
 
-    const source = computed(() => `NearCity Daily ${gameId.value}\nTotal distance: ${lastDailyScore.value}km`)
+    const source = computed(() => `NearCity Daily ${gameId.value}\n${distanceToEmojis(lastDailyScore.value)}\nTotal distance: ${lastDailyScore.value}km`)
     const { copy } = useClipboard({ source })
 
     const { share, isSupported } = useShare()
