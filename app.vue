@@ -1,26 +1,32 @@
 <script setup lang="ts">
+import {useScreenSafeArea} from '@vueuse/core'
+import { UseScreenSafeArea } from '@vueuse/components'
 useHead({
   title: 'Around The Map',
   meta: [
-    { name: 'description', content: 'Daily geography game..' }
+    {name: 'description', content: 'Daily geography game..'},
+    {name: 'viewport', content: 'width=device-width, initial-scale=1.0, viewport-fit="cover"'}
   ],
   bodyAttrs: {
     class: 'bubblegum-font'
   },
 })
+
+const {
+  top,
+  right,
+  bottom,
+  left
+} = useScreenSafeArea()
 </script>
 
 
 <template>
-  <NuxtLoadingIndicator />
-<!--  <ul>-->
-<!--  <li><NuxtLink to="/">Home page</NuxtLink></li>-->
-<!--  <li><NuxtLink to="/about">About page</NuxtLink></li>-->
-<!--  </ul>-->
-  <div class="app-container bg-purple-300 w-screen h-screen font-sans">
-      <NuxtPage />
+  <div class="bg-purple-300 w-screen h-screen">
+    <UseScreenSafeArea top right bottom left>
+      <NuxtPage/>
+    </UseScreenSafeArea>
   </div>
-
 </template>
 
 <style>
