@@ -2,9 +2,14 @@
 import {ref, nextTick} from 'vue';
 import {GameState} from "~/pages/closest-city/types";
 import { useClipboard, useShare } from '@vueuse/core'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 export default {
   setup() {
+    const breakpoints = useBreakpoints(breakpointsTailwind)
+    const activeBreakpoint = breakpoints.active()
+    const sm = breakpoints.smallerOrEqual('sm')
+
     const isLoading = ref(true)
     const isSubmitting = ref(false)
     const gameId = ref(null)
@@ -142,14 +147,15 @@ export default {
       roundResultImage,
       lastDailyScore,
       isSubmitting,
-      shareResult
+      shareResult,
+      sm
     }
   }
 }
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" :class="{'break-sm': sm}">
     <template v-if="isLoading">
       <div class="text-2xl"><font-awesome icon="fas fa-globe" class="fa-beat-fade mr-1.5"/> Loading</div>
     </template>
@@ -171,11 +177,11 @@ export default {
       <template v-else>
 <!--        <header>{{ gameId }}</header>-->
 <!--        <strong>Round {{ round }}</strong>-->
-        <header class="text-lg">Guess a city, town or village nearest to:</header>
-        <h1 class="to-guess-location">{{ location }}</h1>
+        <header class="text-3xl center-broken-text">Guess a city, town or village nearest to:</header>
+        <h1 class="text-8xl to-guess-location center-broken-text">{{ location }}</h1>
         <form class="flex flex-col">
-          <input class="text-input" type="text" v-model="guessText"/>
-          <button :class="{'bg-purple-400': isSubmitting}" class="text-2xl rounded-md p-2 bg-purple-950 text-amber-50 p-5 hover:bg-purple-400 mt-10" type="submit" @click="submitGuess" :disabled="isSubmitting">
+          <input class="text-input text-4xl" type="text" v-model="guessText" placeholder="Your guess">
+          <button :class="{'bg-purple-400': isSubmitting}" class="text-4xl rounded-md p-2 bg-purple-950 text-amber-50 p-5 hover:bg-purple-400 mt-10" type="submit" @click="submitGuess" :disabled="isSubmitting">
             <template v-if="!isSubmitting">Submit guess</template>
             <template v-else>Submitting  <font-awesome icon="fas fa-spinner" class="fa-spin"/></template>
           </button>
@@ -186,19 +192,6 @@ export default {
 </template>
 
 <style scoped>
-html, body {
-  margin: 0;
-}
-
-.app {
-  background: #b98fb2;
-  width: 100vw;
-  height: 100vh;
-  color: #000036;
-  font-family: Fahkwang;
-  font-size: 2vw;
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -218,9 +211,9 @@ html, body {
   border-radius: 4px;
   height: 4vw;
   width: 20vw;
-  font-size: 2rem;
   min-height: 50px;
-  min-width: 200px;
+  min-width: 240px;
+  padding-left: 5px;
 }
 
 .button {
@@ -237,7 +230,6 @@ html, body {
 }
 
 .to-guess-location {
-  font-size: 4vw;
   margin-top: 1rem;
   margin-bottom: 1rem;
   font-weight: bold;
