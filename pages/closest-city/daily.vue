@@ -155,16 +155,16 @@ export default {
 </script>
 
 <template>
-  <div class="container" :class="{'break-sm': sm}">
+  <div class="container text-3xl" :class="{'break-sm': sm}">
     <template v-if="isLoading">
-      <div class="text-2xl"><font-awesome icon="fas fa-globe" class="fa-beat-fade mr-1.5"/> Loading</div>
+      <div class="text-3xl"><font-awesome icon="fas fa-globe" class="fa-beat-fade mr-1.5"/> Loading</div>
     </template>
     <template v-else>
       <template v-if="hasDoneDaily || isGameOver">
         <font-awesome icon="fas fa-trophy" class="fa-2xl text-purple-950"/>
-        <div class="font-bold">Your score today is {{ lastDailyScore }}</div>
+        <div>Your score today is <strong>{{ lastDailyScore }}</strong></div>
         <button @click="shareResult" class="rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400">Share results <font-awesome icon="fas fa-share-nodes" /></button>
-        <p class="text-lg">Come back tomorrow for the next daily game.</p>
+        <p>Come back tomorrow for the next daily game.</p>
 <!--        <button type="button" @click="resetGame">Retry</button>-->
       </template>
       <template v-else-if="isRoundResult">
@@ -224,7 +224,6 @@ export default {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
 
   border-radius: 0.5rem;
 }
