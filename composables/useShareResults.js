@@ -1,44 +1,28 @@
 export const useShareResults = () => {
- function distanceToEmojis(distance) {
-    // Bullseyes: 0–150 km
-    if (distance >= 0 && distance <= 50) {
-        return "🎯🎯🎯🎯🎯"; // 5 bullseyes
-    } else if (distance > 50 && distance <= 75) {
-        return "🎯🎯🎯🎯"; // 4 bullseyes
-    } else if (distance > 75 && distance <= 100) {
-        return "🎯🎯🎯"; // 3 bullseyes
-    } else if (distance > 100 && distance <= 125) {
-        return "🎯🎯"; // 2 bullseyes
-    } else if (distance > 125 && distance <= 150) {
-        return "🎯"; // 1 bullseye
+  function distanceToEmojis (input) {
+    // Define the minimum and maximum values for the scale
+    const minInput = 0;
+    const maxInput = 5000;
+
+    // Cap the maximum number of squares at 8
+    const maxSquares = 8;
+
+    // If input is less than or equal to 50, draw no squares
+    if (input <= 50) {
+        return ""; // Return an empty string
     }
 
-    // Stars (Reversed): 151–500 km
-    else if (distance > 150 && distance <= 175) {
-        return "⭐⭐⭐⭐⭐"; // 5 stars
-    } else if (distance > 175 && distance <= 200) {
-        return "⭐⭐⭐⭐"; // 4 stars
-    } else if (distance > 200 && distance <= 225) {
-        return "⭐⭐⭐"; // 3 stars
-    } else if (distance > 225 && distance <= 250) {
-        return "⭐⭐"; // 2 stars
-    } else if (distance > 250 && distance <= 500) {
-        return "⭐"; // 1 star
-    }
+    // Calculate the number of squares using an exponential scale
+    // Normalize input to a 0-1 range, then scale it exponentially
+    let normalized = (input - 50) / (maxInput - 50); // Normalize input to 0-1
+    normalized = Math.min(Math.max(normalized, 0), 1); // Clamp to 0-1 range
 
-    // Airplane: 501–5,000 km
-    else if (distance > 500 && distance <= 5000) {
-        return "✈️";
-    }
+    // Exponentially scale to determine the number of squares
+    const numberOfSquares = Math.ceil(Math.pow(normalized, 0.5) * maxSquares); // Square root scaling
 
-    // Rocket: 5,001+ km
-    else if (distance > 5000) {
-        return "🚀";
-    }
-
-    // Fallback for invalid input
-    return "🚀";
-}
+    // Draw the squares
+    return '➡️'.repeat(numberOfSquares); // Unicode for a white square
+  }
 
 
   return {
