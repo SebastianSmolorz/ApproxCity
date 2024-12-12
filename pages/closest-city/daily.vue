@@ -172,7 +172,7 @@ export default {
     <template v-else>
       <template v-if="hasDoneDaily || isGameOver">
         <font-awesome icon="fas fa-trophy" class="fa-2xl text-purple-950"/>
-        <div>Your score today is <strong>{{ getLastDailyScore() }}</strong></div>
+        <div>Your score today is <strong>{{ lastDailyScore }}</strong></div>
         <div v-if="dailyBreakdown">
           <p><strong>Round 1:</strong> {{dailyBreakdown.round1}}km</p>
           <p><strong>Round 2:</strong> {{dailyBreakdown.round2}}km</p>
