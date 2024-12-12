@@ -25,7 +25,7 @@ export default {
     const guessLngLat = ref(null)
     const distance = ref(null)
 
-    const source = computed(() => `NearCity Daily ${gameId.value}\nRound 1: ${dailyBreakdown.value?.round1}\nRound 2: ${dailyBreakdown.value?.round2}\nRound 3: ${dailyBreakdown.value?.round3}\nTotal distance: ${lastDailyScore.value}km\napprox-city.vercel.app`)
+    const source = computed(() => `NearCity Daily ${gameId.value}\nRound 1: ${dailyBreakdown.value?.round1}\nRound 2: ${dailyBreakdown.value?.round2}\nRound 3: ${dailyBreakdown.value?.round3}\nTotal distance: ${lastDailyScore.value}km\nhttps://approx-city.vercel.app/`)
     const { copy } = useClipboard({ source })
 
     const { share, isSupported } = useShare()
