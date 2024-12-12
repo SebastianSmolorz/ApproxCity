@@ -16,7 +16,7 @@ export default {
     const lastDoneDaily = ref('')
     const lastDailyScore = ref(0)
     const {getDailyGame, postGuess} = useFooApi()
-    let {saveDailyGameScore, saveRoundScore, getLastDoneDaily, getLastDailyScore, resetGame, getValue} = useGameState()
+    let {saveDailyGameScore, saveRoundScore, getLastDoneDaily, getLastDailyScore, resetGame, getValue, getDailyBreakdown} = useGameState()
     const { distanceToEmojis } = useShareResults()
 
     // Round results
@@ -25,7 +25,7 @@ export default {
     const guessLngLat = ref(null)
     const distance = ref(null)
 
-    const source = computed(() => `NearCity Daily ${gameId.value}\nTotal distance: ${lastDailyScore.value}km`)
+    const source = computed(() => `NearCity Daily ${gameId.value}\nRound 1: ${dailyBreakdown.value?.round1}\nRound 2: ${dailyBreakdown.value?.round2}\nRound 3: ${dailyBreakdown.value?.round3}\nTotal distance: ${lastDailyScore.value}km`)
     const { copy } = useClipboard({ source })
 
     const { share, isSupported } = useShare()
@@ -66,6 +66,10 @@ export default {
       if (!isLoading.value) {
         return game.value?.guesses[round.value - 1]?.city
       }
+    })
+
+    const dailyBreakdown = computed(() => {
+      return getDailyBreakdown(gameId.value)
     })
 
     const submitGuess = async () => {
@@ -151,7 +155,10 @@ export default {
       roundResultImage,
       lastDailyScore,
       isSubmitting,
-      shareResult
+      shareResult,
+      dailyBreakdown,
+      source,
+      copy
     }
   }
 }
@@ -165,8 +172,16 @@ export default {
     <template v-else>
       <template v-if="hasDoneDaily || isGameOver">
         <font-awesome icon="fas fa-trophy" class="fa-2xl text-purple-950"/>
-        <div>Your score today is <strong>{{ lastDailyScore }}</strong></div>
-        <button @click="shareResult" class="rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400">Share results <font-awesome icon="fas fa-share-nodes" /></button>
+        <div>Your score today is <strong>{{ getLastDailyScore() }}</strong></div>
+        <div v-if="dailyBreakdown">
+          <p><strong>Round 1:</strong> {{dailyBreakdown.round1}}km</p>
+          <p><strong>Round 2:</strong> {{dailyBreakdown.round2}}km</p>
+          <p><strong>Round 3:</strong> {{dailyBreakdown.round3}}km</p>
+        </div>
+        <div>
+          <button @click="shareResult" class="rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400 mr-1.5">Share results <font-awesome icon="fas fa-share-nodes" /></button>
+          <button @click="copy()" class="rounded-md bg-purple-950 text-amber-50 p-5 hover:bg-purple-400">Copy results</button>
+        </div>
         <p>Come back tomorrow for the next daily game.</p>
 <!--        <button type="button" @click="resetGame">Retry</button>-->
       </template>
