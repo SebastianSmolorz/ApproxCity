@@ -2,14 +2,9 @@
 import {ref, nextTick} from 'vue';
 import {GameState} from "~/pages/closest-city/types";
 import { useClipboard, useShare } from '@vueuse/core'
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 export default {
   setup() {
-    const breakpoints = useBreakpoints(breakpointsTailwind)
-    const activeBreakpoint = breakpoints.active()
-    const sm = breakpoints.smallerOrEqual('sm')
-
     const isLoading = ref(true)
     const isSubmitting = ref(false)
     const gameId = ref(null)
@@ -30,7 +25,7 @@ export default {
     const guessLngLat = ref(null)
     const distance = ref(null)
 
-    const source = computed(() => `NearCity Daily ${gameId.value}\n${distanceToEmojis(lastDailyScore.value)}\nTotal distance: ${lastDailyScore.value}km`)
+    const source = computed(() => `NearCity Daily ${gameId.value}\nTotal distance: ${lastDailyScore.value}km`)
     const { copy } = useClipboard({ source })
 
     const { share, isSupported } = useShare()
@@ -78,7 +73,16 @@ export default {
         return
       }
       isSubmitting.value = true
-      const data = await postGuess(round.value, guessText.value)
+      let data
+      try {
+        data = await postGuess(round.value, guessText.value)
+      } catch (e) {
+        if ('message' in e.response) {
+          return alert(e?.response?.message || 'Sorry mate, something went awry. Try again in a bit.')
+        } else {
+          return alert('Sorry mate, something went awry. Try again in a bit.')
+        }
+      }
       if (data) {
         let roundScore = parseFloat(data?.distance)
         roundResultImage.value = data?.roundImageUrl
@@ -147,15 +151,14 @@ export default {
       roundResultImage,
       lastDailyScore,
       isSubmitting,
-      shareResult,
-      sm
+      shareResult
     }
   }
 }
 </script>
 
 <template>
-  <div class="container text-3xl" :class="{'break-sm': sm}">
+  <div class="container text-3xl">
     <template v-if="isLoading">
       <div class="text-3xl"><font-awesome icon="fas fa-globe" class="fa-beat-fade mr-1.5"/> Loading</div>
     </template>
