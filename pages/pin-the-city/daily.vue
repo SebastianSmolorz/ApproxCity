@@ -5,7 +5,25 @@ const currentGuess = ref(null)
 const placeToGuess = ref('New York')
 const lngLatToGuess = ref({lng: -74.0060, lat: 40.7128})
 const reveal = ref(false)
+const crowData = computed(() => {
+  if (currentGuess.value?.lat && currentGuess.value?.lat) {
+    return {
+      'type': 'LineString',
+      'coordinates': [
+        [lngLatToGuess.value.lat, lngLatToGuess.value.lng],
+        [currentGuess.value.lat, currentGuess.value.lng],
+      ]
+    }
+  }
+  return {}
+})
 
+const crowSource = computed(() => {
+  return {
+    type: 'geojson',
+    data: crowData.value
+  }
+})
 
 function onClick(e) {
   console.log(e.lngLat)
@@ -19,8 +37,27 @@ function onSubmit() {
     lngLatToGuess.value,
     currentGuess.value
   ], {
-    padding: {top: 50, bottom: 50, left: 50, right: 50}
+    padding: {top: 200, bottom: 200, left: 200, right: 200}
   })
+
+
+  const crowSourceData = {
+    'type': 'geojson',
+    'data': {
+      'type': 'Feature',
+      'properties': {},
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': [
+          [lngLatToGuess.value.lng, lngLatToGuess.value.lat],
+          [currentGuess.value.lng, currentGuess.value.lat]
+        ]
+      }
+    }
+  }
+  console.log('c', crowSourceData)
+
+  mapRef.value?.addSource('crow', crowSourceData)
 
 }
 </script>
@@ -33,26 +70,42 @@ function onSubmit() {
         @click="onClick"
         :options="{
         style: 'mapbox://styles/navigator-game/cm4oetl34005n01qtg94sga3e', // style URL
-        center: [-68.137343, 45.137451], // starting position
-        zoom: 5 // starting zoom
+        center: [0, 0], // starting position
+        zoom: 3 // starting zoom
       }"
     >
       <MapboxDefaultMarker
           v-if="currentGuess"
           marker-id="guess"
-          :options="{}"
+          :options="{ color: '#aa5fe0'}"
           :lnglat="currentGuess"
       >
       </MapboxDefaultMarker>
       <MapboxDefaultMarker
           v-if="reveal"
           marker-id="location"
-          :options="{ color: '#b40219'}"
+          :options="{ color: '#fc3737'}"
           :lnglat="lngLatToGuess"
       >
       </MapboxDefaultMarker>
+      <MapboxLayer
+          :layer="{
+            'id': 'route',
+            'type': 'line',
+            'source': 'crow',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': '#8600d9',
+                'line-width': 12
+            }
+        }"
+      />
     </MapboxMap>
-    <div class="absolute text-7xl top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 backdrop-blur backdrop-contrast-125 text-amber-50">
+    <div
+        class="absolute text-7xl top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 backdrop-blur backdrop-contrast-125 text-amber-50">
       Place {{ placeToGuess }} on the map
     </div>
     <div class="absolute top-3 right-3">
