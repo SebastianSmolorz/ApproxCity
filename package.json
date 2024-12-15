@@ -17,6 +17,7 @@
     "axios": "^1.7.7",
     "nuxt": "^3.13.2",
     "nuxt-mapbox": "^1.6.1",
+    "posthog-js": "^1.200.1",
     "vue": "latest",
     "vue-router": "latest"
   },

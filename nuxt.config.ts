@@ -7,7 +7,9 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             mapboxToken: process.env.NUXT_MAPBOX_TOKEN,
-            gameUrl: process.env.NUXT_APPROXCITY_LAMBDA_URL
+            gameUrl: process.env.NUXT_APPROXCITY_LAMBDA_URL,
+            posthogPublicKey: process.env.NUXT_POSTHOG_PUBLIC_KEY,
+            posthogHost: 'https://us.i.posthog.com'
         }
     },
 

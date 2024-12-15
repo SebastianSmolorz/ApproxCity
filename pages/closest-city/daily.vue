@@ -2,6 +2,7 @@
 import {ref, nextTick} from 'vue';
 import {GameState} from "~/pages/closest-city/types";
 import { useClipboard, useShare } from '@vueuse/core'
+import useAnalytics from "~/composables/useAnalytics";
 
 export default {
   setup() {
@@ -18,6 +19,7 @@ export default {
     const {getDailyGame, postGuess} = useFooApi()
     let {saveDailyGameScore, saveRoundScore, getLastDoneDaily, getLastDailyScore, resetGame, getValue, getDailyBreakdown} = useGameState()
     const { distanceToEmojis } = useShareResults()
+    const { captureEvent } = useAnalytics()
 
     // Round results
     const roundResultImage = ref(null)
@@ -80,6 +82,7 @@ export default {
       }
       isSubmitting.value = true
       let data
+      captureEvent('name_closest.submit_round', { guess: guessText.value, round: round.value, gameId: gameId.value })
       try {
         data = await postGuess(round.value, guessText.value)
       } catch (e) {
