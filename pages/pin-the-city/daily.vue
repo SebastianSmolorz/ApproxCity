@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import {usePinTheCityApi} from "~/composables/useFooApi";
+
 const mapRef = useMapboxRef('map');
 
 const currentGuess = ref(null)
 const placeToGuess = ref('New York')
 const lngLatToGuess = ref({lng: -74.0060, lat: 40.7128})
 const reveal = ref(false)
+const gameId = ref(null)
+const game = ref({})
+
+const {
+  getDailyGame,
+  postGuess
+} = usePinTheCityApi()
+
 const crowData = computed(() => {
   if (currentGuess.value?.lat && currentGuess.value?.lat) {
     return {
@@ -18,16 +28,19 @@ const crowData = computed(() => {
   return {}
 })
 
-const crowSource = computed(() => {
-  return {
-    type: 'geojson',
-    data: crowData.value
-  }
-})
-
 function onClick(e) {
   console.log(e.lngLat)
   currentGuess.value = e.lngLat;
+}
+
+function nextRound() {
+
+}
+
+async function loadGame() {
+  const response = await getDailyGame()
+  game.value = response.guesses
+  gameId.value = response.gameId
 }
 
 function onSubmit() {
@@ -40,8 +53,7 @@ function onSubmit() {
     padding: {top: 200, bottom: 200, left: 200, right: 200}
   })
 
-
-  const crowSourceData = {
+  mapRef.value?.addSource('crow', {
     'type': 'geojson',
     'data': {
       'type': 'Feature',
@@ -54,12 +66,14 @@ function onSubmit() {
         ]
       }
     }
-  }
-  console.log('c', crowSourceData)
-
-  mapRef.value?.addSource('crow', crowSourceData)
-
+  })
 }
+
+onMounted(async () => {
+    await loadGame()
+    placeToGuess.value = game.value[0].city
+    lngLatToGuess.value = {lat: game.value[0].lat, lng: game.value[0].lon}
+})
 </script>
 
 <template>
@@ -105,10 +119,10 @@ function onSubmit() {
       />
     </MapboxMap>
     <div
-        class="absolute text-7xl top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 backdrop-blur backdrop-contrast-125 text-amber-50">
+        class="absolute bg-black backdrop-blur text-3xl top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-amber-50 text-center p-1">
       Place {{ placeToGuess }} on the map
     </div>
-    <div class="absolute top-3 right-3">
+    <div class="absolute left-1/2 transform -translate-x-1/2 bottom-5">
       <PrimaryButton @click="onSubmit">Submit guess</PrimaryButton>
     </div>
   </div>
