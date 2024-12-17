@@ -30,7 +30,7 @@ export default {
     function getRoundBreakdownString () {
       return `1️⃣${distanceToEmojis(dailyBreakdown.value?.round1)}${dailyBreakdown.value?.round1}\n2️⃣${distanceToEmojis(dailyBreakdown.value?.round2)}${dailyBreakdown.value?.round2}\n3️⃣${distanceToEmojis(dailyBreakdown.value?.round3)}${dailyBreakdown.value?.round3}\n`
     }
-    const source = computed(() => `NearCity Daily ${gameId.value}\n${getRoundBreakdownString()}Total distance: ${lastDailyScore.value}km\nhttps://approx-city.vercel.app/`)
+    const source = computed(() => `NearCity Daily ${gameId.value}\n${getRoundBreakdownString()}Total distance: ${lastDailyScore.value}km\nhttps://approx-city.vercel.app/?utm_source=share`)
     const { copy } = useClipboard({ source })
 
     const { share, isSupported } = useShare()
